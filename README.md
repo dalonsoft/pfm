@@ -3,9 +3,10 @@
 ## General Description
 PFM (Personal Finance Manager) is an application designed to help users manage their personal finances. The application allows users to keep track of their different accounts and record all transactions, categorizing them with the goal of defining budgets and controlling expenses, income, investments, and savings.
 
-## Technologies Used
-- **Framework**: Laravel with Inertia JS and Jetstream
-- **Frontend**: React integrated with Laravel through Inertia JS, Jetstream, and Tailwind CSS
+## Technology Stack
+Web application built in monolithic architecture using the following technologies:
+- **Backend**: PHP, Laravel, Inertia.js, Jetstream
+- **Frontend**: HTML, CSS, Tailwind CSS, React
 
 ## Main Features
 
