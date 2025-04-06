@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('account_year', function (Blueprint $table) {
+        Schema::create('transaction_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->constrained('accounts');
-            $table->foreignId('year_id')->constrained('years');
-            $table->decimal('opening_balance', 10, 2);            
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('transaction_categories');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('account_year');
+        Schema::dropIfExists('transaction_categories');
     }
 };

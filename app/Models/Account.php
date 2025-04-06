@@ -16,14 +16,6 @@ class Account extends Model
         'currency_id'
     ];
 
-    // Relationships with year model
-    public function years()
-    {
-        return $this->belongsToMany(Year::class, 'account_year', 'account_id', 'year_id')
-            ->withPivot('opening_balance')
-            ->withTimestamps();
-    }
-
     // Relationship with account category model
     public function currency(): BelongsTo
     {
