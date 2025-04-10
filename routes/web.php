@@ -37,11 +37,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/currencies/{currency}', [CurrencyController::class, 'destroy'])->name('currencies.destroy');
     Route::post('/currencies', [CurrencyController::class, 'store'])->name('currencies.store');
 
-    // Year
-    Route::get('/years', [YearController::class, 'index'])->name('years.index');
-    Route::delete('/years/{year}', [YearController::class, 'destroy'])->name('years.destroy');
-    Route::post('/years', [YearController::class, 'store'])->name('years.store');
-
     // Account category
     Route::get('/account-categories', [AccountCategoryController::class, 'index'])->name('account-categories.index');
     Route::delete('/account-categories/{accountCategory}', [AccountCategoryController::class, 'destroy'])->name('account-categories.destroy');
