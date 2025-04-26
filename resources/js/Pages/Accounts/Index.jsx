@@ -21,6 +21,12 @@ const AccountsIndex = ({ accounts }) => {
         { header: 'Category', accessor: 'category.name' }
     ];
 
+    const handleDelete = (id) => {
+        if (confirm('Are you sure you want to delete this account?')) {
+            // Lógica para borrar la cuenta
+        }
+    };
+
     const actions = {
         view: (account) => `/accounts/${account.id}`,
         edit: (account) => handleEdit(account),
@@ -101,12 +107,6 @@ const AccountsIndex = ({ accounts }) => {
             </Dialog>
         </AuthenticatedLayout>
     );
-};
-
-const handleDelete = (id) => {
-    if (confirm('Are you sure you want to delete this account?')) {
-        // Lógica para borrar la cuenta
-    }
 };
 
 export default AccountsIndex;
