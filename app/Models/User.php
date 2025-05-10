@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -44,5 +45,43 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user preferences for the user.
+     */
+    public function preferences(): HasMany
+    {
+        return $this->hasMany(UserPreference::class);
+    }
+
+    /**
+     * Get a specific preference value.
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getPreference(string $key, $default = null)
+    {
+        $preference = $this->preferences()->where('key', $key)->first();
+        return $preference ? $preference->value : $default;
+    }
+
+    /**
+     * Set a preference value.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return UserPreference
+     */
+    public function setPreference(string $key, $value)
+    {
+        $preference = $this->preferences()->updateOrCreate(
+            ['key' => $key],
+            ['value' => $value]
+        );
+
+        return $preference;
     }
 }
