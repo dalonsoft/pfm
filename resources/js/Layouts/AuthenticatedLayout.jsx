@@ -2,6 +2,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import Translation from '@/Components/Translation';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -28,25 +29,25 @@ export default function AuthenticatedLayout({ header, children }) {
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
                                 >
-                                    Dashboard
+                                    <Translation>navigation.dashboard</Translation>
                                 </NavLink>
                                 <NavLink
                                     href={route('accounts.index')}
                                     active={route().current('accounts.index')}
                                 >
-                                    Accounts
+                                    <Translation>navigation.accounts</Translation>
                                 </NavLink>
                                 <NavLink
                                     href={route('transactions.index')}
                                     active={route().current('transactions.index')}
                                 >
-                                    Transactions
+                                    <Translation>navigation.transactions</Translation>
                                 </NavLink>
                                 <NavLink
                                     href={route('settings.index')}
                                     active={route().current('settings.index')}
                                 >
-                                    Settings
+                                    <Translation>navigation.settings</Translation>
                                 </NavLink>
                             </div>
                         </div>
@@ -82,14 +83,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <Dropdown.Link
                                             href={route('profile.edit')}
                                         >
-                                            Profile
+                                            <Translation>navigation.profile</Translation>
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route('logout')}
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            <Translation>navigation.logout</Translation>
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -150,7 +151,28 @@ export default function AuthenticatedLayout({ header, children }) {
                             href={route('dashboard')}
                             active={route().current('dashboard')}
                         >
-                            Dashboard
+                            <Translation>navigation.dashboard</Translation>
+                        </ResponsiveNavLink>
+                        
+                        <ResponsiveNavLink
+                            href={route('accounts.index')}
+                            active={route().current('accounts.index')}
+                        >
+                            <Translation>navigation.accounts</Translation>
+                        </ResponsiveNavLink>
+                        
+                        <ResponsiveNavLink
+                            href={route('transactions.index')}
+                            active={route().current('transactions.index')}
+                        >
+                            <Translation>navigation.transactions</Translation>
+                        </ResponsiveNavLink>
+                        
+                        <ResponsiveNavLink
+                            href={route('settings.index')}
+                            active={route().current('settings.index')}
+                        >
+                            <Translation>navigation.settings</Translation>
                         </ResponsiveNavLink>
                     </div>
 
@@ -166,14 +188,14 @@ export default function AuthenticatedLayout({ header, children }) {
 
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
+                                <Translation>navigation.profile</Translation>
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 method="post"
                                 href={route('logout')}
                                 as="button"
                             >
-                                Log Out
+                                <Translation>navigation.logout</Translation>
                             </ResponsiveNavLink>
                         </div>
                     </div>

@@ -2,11 +2,12 @@ import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import DataTable from '@/Components/DataTable';
+import Translation from '@/Components/Translation';
 
 const transactionsIndex = ({ transactions }) => {
     const columns = [
-        { header: 'Nombre', accessor: 'name' },
-        { header: 'Categoría', accessor: 'category.name' }
+        { header: <Translation>transactions.name</Translation>, accessor: 'name' },
+        { header: <Translation>transactions.category</Translation>, accessor: 'category.name' }
     ];
 
     const actions = {
@@ -19,7 +20,7 @@ const transactionsIndex = ({ transactions }) => {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Transactions
+                    <Translation>transactions.title</Translation>
                 </h2>
             }
         >
@@ -39,7 +40,7 @@ const transactionsIndex = ({ transactions }) => {
 };
 
 const handleDelete = (id) => {
-    if (confirm('Are you sure you want to delete this transaction?')) {
+    if (confirm(window.translations?.transactions?.confirm_delete || 'Are you sure you want to delete this transaction?')) {
         // Lógica para borrar la transacción
     }
 };

@@ -1,11 +1,19 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Form, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import Translation from '@/Components/Translation';
+import { usePage } from '@inertiajs/react';
 
 const AccountForm = ({ defaultValues, onSubmit, onCancel, isEditMode }) => {
     const form = useForm({
         defaultValues
     });
+    
+    const { translations } = usePage().props;
+    const nameRequired = translations?.validation?.required || 'is required';
+    const categoryRequired = translations?.validation?.required || 'is required';
+    const nameLabel = translations?.accounts?.name || 'Name';
+    const categoryLabel = translations?.accounts?.category || 'Category';
 
     const { handleSubmit, control, formState: { errors } } = form;
 
@@ -13,12 +21,12 @@ const AccountForm = ({ defaultValues, onSubmit, onCancel, isEditMode }) => {
         <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel><Translation>accounts.name</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="name"
                             control={control}
-                            rules={{ required: 'Name is required' }}
+                            rules={{ required: `${nameLabel} ${nameRequired}` }}
                             render={({ field }) => (
                                 <input
                                     type="text"
@@ -32,12 +40,12 @@ const AccountForm = ({ defaultValues, onSubmit, onCancel, isEditMode }) => {
                 </FormItem>
 
                 <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel><Translation>accounts.category</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="category"
                             control={control}
-                            rules={{ required: 'Category is required' }}
+                            rules={{ required: `${categoryLabel} ${categoryRequired}` }}
                             render={({ field }) => (
                                 <input
                                     type="text"
@@ -56,13 +64,13 @@ const AccountForm = ({ defaultValues, onSubmit, onCancel, isEditMode }) => {
                         onClick={onCancel}
                         className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                        Cancel
+                        <Translation>accounts.cancel</Translation>
                     </button>
                     <button
                         type="submit"
                         className="ml-3 inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                        {isEditMode ? 'Update' : 'Create'}
+                        {isEditMode ? <Translation>accounts.update</Translation> : <Translation>accounts.create</Translation>}
                     </button>
                 </div>
             </form>

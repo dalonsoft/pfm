@@ -1,86 +1,86 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import DataTable from '@/Components/DataTable';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import AccountForm from '@/Components/AccountForm';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import Translation from '@/Components/Translation';
 
 const AccountsIndex = ({ accounts }) => {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [currentAccount, setCurrentAccount] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
+    const [editData, setEditData] = useState(null);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [accountToDelete, setAccountToDelete] = useState(null);
+    const { translations } = usePage().props;
+    const title = translations?.accounts?.accounts || 'Accounts';
 
     const defaultValues = {
         name: '',
-        category: ''
+        description: '',
+        number: '',
+        account_category_id: '',
+        currency_id: ''
     };
 
+    // Utilizamos traducciones para las cabeceras de columnas
     const columns = [
-        { header: 'Name', accessor: 'name' },
-        { header: 'Category', accessor: 'category.name' }
+        { header: <Translation>accounts.name</Translation>, accessor: 'name' },
+        { header: <Translation>accounts.category</Translation>, accessor: 'category.name' }
     ];
 
-    const handleDelete = (id) => {
-        if (confirm('Are you sure you want to delete this account?')) {
-            // Lógica para borrar la cuenta
-        }
-    };
-
-    const actions = {
-        view: (account) => `/accounts/${account.id}`,
-        edit: (account) => handleEdit(account),
-        delete: (account) => handleDelete(account.id)
-    };
-
     const handleCreate = () => {
-        setIsEditMode(false);
-        setCurrentAccount(null);
-        setIsDialogOpen(true);
+        setEditData(null);
+        setIsOpen(true);
     };
 
     const handleEdit = (account) => {
-        setIsEditMode(true);
-        setCurrentAccount(account);
-        setIsDialogOpen(true);
-    };
-
-    const handleCloseDialog = () => {
-        setIsDialogOpen(false);
+        setEditData({...account});
+        setIsOpen(true);
     };
 
     const handleSubmit = (data) => {
-        if (isEditMode) {
-            // Lógica para actualizar la cuenta
-            console.log('Updating account:', currentAccount.id, data);
+        if (editData) {
+            router.put(`/accounts/${editData.id}`, data);
         } else {
-            // Lógica para crear una nueva cuenta
-            console.log('Creating account:', data);
+            router.post('/accounts', data);
         }
-        handleCloseDialog();
+        setIsOpen(false);
+    };
+
+    const handleDelete = (id) => {
+        setAccountToDelete(id);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = () => {
+        router.delete(`/accounts/${accountToDelete}`);
+        setIsDeleteDialogOpen(false);
+    };
+
+    const actions = {
+        edit: handleEdit,
+        delete: handleDelete
     };
 
     return (
         <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Accounts
-                </h2>
-            }
+            header={<h2 className="text-xl font-semibold leading-tight"><Translation>accounts.accounts</Translation></h2>}
         >
-            <Head title="Accounts" />
+            <Head title={title} />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
+                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                        <div className="p-6">
                             <div className="flex justify-end mb-4">
                                 <button
+                                    type="button"
                                     onClick={handleCreate}
-                                    className="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150"
+                                    className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md"
                                 >
                                     <PlusIcon className="w-5 h-5 mr-2" />
-                                    Create Account
+                                    <Translation>accounts.create_account</Translation>
                                 </button>
                             </div>
                             <DataTable data={accounts} columns={columns} actions={actions} />
@@ -89,20 +89,49 @@ const AccountsIndex = ({ accounts }) => {
                 </div>
             </div>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>{isEditMode ? 'Edit Account' : 'Create Account'}</DialogTitle>
+                        <DialogTitle>
+                            {editData ? <Translation>accounts.edit_account</Translation> : <Translation>accounts.create_account</Translation>}
+                        </DialogTitle>
                         <DialogDescription>
-                            {isEditMode ? 'Edit the details of the account.' : 'Fill in the details to create a new account.'}
+                            {editData ? <Translation>accounts.edit_form_description</Translation> : <Translation>accounts.create_form_description</Translation>}
                         </DialogDescription>
                     </DialogHeader>
                     <AccountForm
-                        defaultValues={isEditMode ? currentAccount : defaultValues}
+                        defaultValues={editData || defaultValues}
                         onSubmit={handleSubmit}
-                        onCancel={handleCloseDialog}
-                        isEditMode={isEditMode}
+                        onCancel={() => setIsOpen(false)}
+                        isEditMode={!!editData}
                     />
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle><Translation>accounts.delete_confirmation_title</Translation></DialogTitle>
+                        <DialogDescription>
+                            <Translation>accounts.delete_confirmation</Translation>
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex justify-end space-x-2 mt-4">
+                        <button
+                            type="button"
+                            onClick={() => setIsDeleteDialogOpen(false)}
+                            className="px-4 py-2 border border-gray-300 rounded-md"
+                        >
+                            <Translation>accounts.cancel</Translation>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={confirmDelete}
+                            className="px-4 py-2 bg-red-600 text-white rounded-md"
+                        >
+                            <Translation>accounts.delete</Translation>
+                        </button>
+                    </div>
                 </DialogContent>
             </Dialog>
         </AuthenticatedLayout>
