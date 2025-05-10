@@ -87,6 +87,54 @@ All code should follow the SOLID principles where possible:
 - Write clear commit messages describing what the change does.
 - Rebase your branch on the latest main branch before submitting a PR.
 
+### Commit Message Guidelines
+
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for our commit messages:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+#### Types
+- **feat**: A new feature
+- **fix**: A bug fix
+- **docs**: Documentation only changes
+- **style**: Changes that do not affect the meaning of the code (white-space, formatting, etc)
+- **refactor**: A code change that neither fixes a bug nor adds a feature
+- **perf**: A code change that improves performance
+- **test**: Adding missing tests or correcting existing tests
+- **chore**: Changes to the build process or auxiliary tools and libraries
+
+#### Scope
+The scope should be the name of the module affected (as perceived by the person reading the changelog).
+
+#### Description
+- Use imperative, present tense: "change" not "changed" nor "changes"
+- Don't capitalize the first letter
+- No period (.) at the end
+
+#### Examples
+```
+feat(accounts): add new bank account reconciliation feature
+fix(transactions): prevent duplicate transaction entries
+docs(readme): update installation instructions
+refactor(auth): improve authentication flow
+```
+
+### Best Practices for Commits
+
+- **Atomic Commits**: Each commit should represent a single logical change. This makes it easier to review, revert, or cherry-pick changes.
+- **Consistent History**: Avoid "fix typo" or "oops" commits by using `git commit --amend` or interactive rebasing to clean up your history before pushing.
+- **Meaningful Changes**: Don't mix unrelated changes in the same commit.
+- **Reviewable Size**: Keep commits at a reviewable size. Large commits are difficult to review and understand.
+- **Working State**: Each commit should leave the codebase in a working state. Tests should pass after each commit.
+- **Reference Issues**: When a commit addresses an issue, reference it in the commit message (e.g., "fix: resolve issue #42").
+- **Sign Your Commits**: If possible, use GPG to sign your commits to verify authenticity.
+
 ## Code Review
 
 All code changes require a code review. During code reviews, reviewers should check:
