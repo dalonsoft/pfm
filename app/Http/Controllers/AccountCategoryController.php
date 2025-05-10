@@ -26,6 +26,17 @@ class AccountCategoryController extends Controller
         AccountCategory::create($request->all());
         return redirect()->route('account-categories.index');
     }
+    
+    public function update(Request $request, AccountCategory $accountCategory)
+    {
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required'
+        ]);
+
+        $accountCategory->update($request->all());
+        return redirect()->route('account-categories.index');
+    }
 
     public function destroy(AccountCategory $accountCategory)
     {
