@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components/ui/table';
 import { Link } from '@inertiajs/react';
 import { PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import Translation from '@/Components/Translation';
 
 const DataTable = ({ data, columns, actions }) => {
     return (
@@ -14,7 +15,9 @@ const DataTable = ({ data, columns, actions }) => {
                         </TableCell>
                     ))}
                     {actions && (
-                        <TableCell className="py-2 px-4 border-b">Acciones</TableCell>
+                        <TableCell className="py-2 px-4 border-b">
+                            <Translation>common.actions</Translation>
+                        </TableCell>
                     )}
                 </TableRow>
             </TableHeader>
@@ -23,7 +26,9 @@ const DataTable = ({ data, columns, actions }) => {
                     <TableRow key={rowIndex}>
                         {columns.map((column, colIndex) => (
                             <TableCell key={colIndex} className="py-2 px-4 border-b">
-                                {getNestedValue(item, column.accessor)}
+                                {column.render 
+                                    ? column.render(getNestedValue(item, column.accessor), item) 
+                                    : getNestedValue(item, column.accessor)}
                             </TableCell>
                         ))}
                         {actions && (

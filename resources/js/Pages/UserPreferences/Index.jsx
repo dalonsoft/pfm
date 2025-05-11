@@ -6,13 +6,15 @@ import Translation from '@/Components/Translation';
 const UserPreferencesIndex = ({ preferences, currencies, availableLanguages }) => {
     const { data, setData, post, processing, errors } = useForm({
         language: preferences.language || 'es',
-        preferred_currency: preferences.preferred_currency || ''
+        preferred_currency: preferences.preferred_currency || '',
+        amount_format: preferences.amount_format || 'dot_comma', // European default: 1.234,56
+        date_format: preferences.date_format || 'dd/mm/yyyy' // European default: 31/12/2025
     });
     
     const { translations } = usePage().props;
     const title = translations?.preferences?.preferences || 'Preferences';
 
-    // Obtenemos las traducciones para los idiomas disponibles
+    // Get translations for available languages
     const getLanguageLabel = (code) => {
         const key = `preferences.language_${code}`;
         return translations?.preferences?.[`language_${code}`] || code.toUpperCase();
@@ -22,6 +24,24 @@ const UserPreferencesIndex = ({ preferences, currencies, availableLanguages }) =
         e.preventDefault();
         post(route('user-preferences.update'));
     };
+
+    // Amount format options
+    const amountFormats = [
+        { value: 'dot_comma', label: '1.234,56 (European)' },
+        { value: 'comma_dot', label: '1,234.56 (US/UK)' },
+        { value: 'space_comma', label: '1 234,56 (French)' },
+        { value: 'none_dot', label: '1234.56' },
+        { value: 'none_comma', label: '1234,56' }
+    ];
+
+    // Date format options
+    const dateFormats = [
+        { value: 'dd/mm/yyyy', label: '31/12/2025 (European)' },
+        { value: 'mm/dd/yyyy', label: '12/31/2025 (US)' },
+        { value: 'yyyy-mm-dd', label: '2025-12-31 (ISO)' },
+        { value: 'dd-mm-yyyy', label: '31-12-2025' },
+        { value: 'dd.mm.yyyy', label: '31.12.2025 (German)' }
+    ];
 
     return (
         <AuthenticatedLayout
@@ -71,6 +91,50 @@ const UserPreferencesIndex = ({ preferences, currencies, availableLanguages }) =
                                             </option>
                                         ))}
                                     </select>
+                                </div>
+
+                                <div className="mb-6">
+                                    <label htmlFor="amount_format" className="block text-sm font-medium text-gray-700 mb-1">
+                                        <Translation>preferences.amount_format</Translation>
+                                    </label>
+                                    <select
+                                        id="amount_format"
+                                        name="amount_format"
+                                        value={data.amount_format}
+                                        onChange={(e) => setData('amount_format', e.target.value)}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    >
+                                        {amountFormats.map((format) => (
+                                            <option key={format.value} value={format.value}>
+                                                {format.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="mt-1 text-sm text-gray-500">
+                                        <Translation>preferences.amount_format_help</Translation>
+                                    </p>
+                                </div>
+
+                                <div className="mb-6">
+                                    <label htmlFor="date_format" className="block text-sm font-medium text-gray-700 mb-1">
+                                        <Translation>preferences.date_format</Translation>
+                                    </label>
+                                    <select
+                                        id="date_format"
+                                        name="date_format"
+                                        value={data.date_format}
+                                        onChange={(e) => setData('date_format', e.target.value)}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    >
+                                        {dateFormats.map((format) => (
+                                            <option key={format.value} value={format.value}>
+                                                {format.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="mt-1 text-sm text-gray-500">
+                                        <Translation>preferences.date_format_help</Translation>
+                                    </p>
                                 </div>
 
                                 <div className="flex justify-end">

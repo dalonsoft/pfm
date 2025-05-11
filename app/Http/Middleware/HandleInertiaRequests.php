@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Illuminate\Support\Facades\Log;
+use App\Models\Currency;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -60,12 +61,26 @@ class HandleInertiaRequests extends Middleware
         // Load all translations for the current locale
         $translations = $this->getTranslations($locale);
 
+        // Get user preferences if authenticated
+        $userPreferences = [];
+        if (auth()->check()) {
+            $user = auth()->user();
+            $userPreferences = [
+                'language' => $user->getPreference('language', 'es'),
+                'preferred_currency' => $user->getPreference('preferred_currency'),
+                'amount_format' => $user->getPreference('amount_format', 'dot_comma'), // European default
+                'date_format' => $user->getPreference('date_format', 'dd/mm/yyyy'), // European default
+                'currencies' => Currency::select('id', 'name', 'code', 'symbol')->get()
+            ];
+        }
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
             ],
             'locale' => $locale,
             'translations' => $translations,
+            'userPreferences' => $userPreferences,
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
