@@ -23,9 +23,9 @@ class Account extends Model
     }
 
     // Relationship with currency model
-    public function accountCategory(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(AccountCategory::class);
+        return $this->belongsTo(AccountCategory::class, 'account_category_id');
     }
 
     // Relationship with transaction model

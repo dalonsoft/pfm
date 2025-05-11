@@ -7,7 +7,7 @@ import AccountForm from '@/Components/AccountForm';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Translation from '@/Components/Translation';
 
-const AccountsIndex = ({ accounts }) => {
+const AccountsIndex = ({ accounts, categories, currencies }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [editData, setEditData] = useState(null);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -104,6 +104,8 @@ const AccountsIndex = ({ accounts }) => {
                         onSubmit={handleSubmit}
                         onCancel={() => setIsOpen(false)}
                         isEditMode={!!editData}
+                        categories={categories}
+                        currencies={currencies}
                     />
                 </DialogContent>
             </Dialog>

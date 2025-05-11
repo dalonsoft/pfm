@@ -4,7 +4,7 @@ import { Form, FormItem, FormLabel, FormControl, FormMessage } from '@/component
 import Translation from '@/Components/Translation';
 import { usePage } from '@inertiajs/react';
 
-const AccountForm = ({ defaultValues, onSubmit, onCancel, isEditMode }) => {
+const AccountForm = ({ defaultValues, onSubmit, onCancel, isEditMode, categories, currencies }) => {
     const form = useForm({
         defaultValues
     });
@@ -12,8 +12,10 @@ const AccountForm = ({ defaultValues, onSubmit, onCancel, isEditMode }) => {
     const { translations } = usePage().props;
     const nameRequired = translations?.validation?.required || 'is required';
     const categoryRequired = translations?.validation?.required || 'is required';
+    const currencyRequired = translations?.validation?.required || 'is required';
     const nameLabel = translations?.accounts?.name || 'Name';
     const categoryLabel = translations?.accounts?.category || 'Category';
+    const currencyLabel = translations?.accounts?.currency || 'Currency';
 
     const { handleSubmit, control, formState: { errors } } = form;
 
@@ -43,19 +45,50 @@ const AccountForm = ({ defaultValues, onSubmit, onCancel, isEditMode }) => {
                     <FormLabel><Translation>accounts.category</Translation></FormLabel>
                     <FormControl>
                         <Controller
-                            name="category"
+                            name="account_category_id"
                             control={control}
                             rules={{ required: `${categoryLabel} ${categoryRequired}` }}
                             render={({ field }) => (
-                                <input
-                                    type="text"
+                                <select
                                     {...field}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                />
+                                >
+                                    <option value="">{translations?.accounts?.select_category || 'Select a category'}</option>
+                                    {categories && categories.map(category => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
                             )}
                         />
                     </FormControl>
-                    {errors.category && <FormMessage>{errors.category.message}</FormMessage>}
+                    {errors.account_category_id && <FormMessage>{errors.account_category_id.message}</FormMessage>}
+                </FormItem>
+
+                <FormItem>
+                    <FormLabel><Translation>accounts.currency</Translation></FormLabel>
+                    <FormControl>
+                        <Controller
+                            name="currency_id"
+                            control={control}
+                            rules={{ required: `${currencyLabel} ${currencyRequired}` }}
+                            render={({ field }) => (
+                                <select
+                                    {...field}
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                >
+                                    <option value="">{translations?.accounts?.select_currency || 'Select a currency'}</option>
+                                    {currencies && currencies.map(currency => (
+                                        <option key={currency.id} value={currency.id}>
+                                            {currency.code} - {currency.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
+                        />
+                    </FormControl>
+                    {errors.currency_id && <FormMessage>{errors.currency_id.message}</FormMessage>}
                 </FormItem>
 
                 <div className="mt-4 flex justify-end space-x-2">
