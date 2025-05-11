@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Log;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,6 +33,25 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        // Establecer el idioma preferido del usuario en la sesión inmediatamente después del login
+        if (Auth::check()) {
+            $user = Auth::user();
+            $preferredLanguage = $user->getPreference('language');
+            
+            if ($preferredLanguage) {
+                // Guardar el idioma preferido en la sesión
+                $request->session()->put('locale', $preferredLanguage);
+                
+                // Establecer el idioma para la solicitud actual
+                app()->setLocale($preferredLanguage);
+                
+                Log::info('User language preference applied after login', [
+                    'user_id' => $user->id,
+                    'language' => $preferredLanguage
+                ]);
+            }
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
