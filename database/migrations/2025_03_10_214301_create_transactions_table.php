@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('concept');
             $table->decimal('amount', 10, 2);
             $table->foreignId('transaction_category_id')->constrained('transaction_categories');
-            $table->decimal('balance', 10, 2)->nullable();
             $table->string('note')->nullable();
             $table->timestamps();
         });

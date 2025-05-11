@@ -17,7 +17,6 @@ class Transaction extends Model
         'date',
         'transaction_type_id',
         'concept',
-        'balance',
         'note'
     ];
 
