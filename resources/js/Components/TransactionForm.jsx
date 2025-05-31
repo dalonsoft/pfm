@@ -13,20 +13,38 @@ const TransactionForm = ({
     transactionCategories,
     transactionTypes
 }) => {
+    const processedDefaultValues = {
+        ...defaultValues,
+        account_id: defaultValues.account_id ? Number(defaultValues.account_id) : '',
+        transaction_category_id: defaultValues.transaction_category_id ? Number(defaultValues.transaction_category_id) : '',
+        transaction_type_id: defaultValues.transaction_type_id ? Number(defaultValues.transaction_type_id) : ''
+    };
+    
     const form = useForm({
-        defaultValues
+        defaultValues: processedDefaultValues
     });
     
     const { translations } = usePage().props;
     const requiredMsg = translations?.validation?.required || 'is required';
     
     const { handleSubmit, control, formState: { errors } } = form;
+    
+    const handleFormSubmit = (data) => {
+        const processedData = {
+            ...data,
+            account_id: data.account_id ? Number(data.account_id) : '',
+            transaction_category_id: data.transaction_category_id ? Number(data.transaction_category_id) : '',
+            transaction_type_id: data.transaction_type_id ? Number(data.transaction_type_id) : '',
+        };
+        
+        onSubmit(processedData);
+    };
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
                 <FormItem>
-                    <FormLabel><Translation>transactions.date</Translation></FormLabel>
+                    <FormLabel htmlFor="date"><Translation>transactions.date</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="date"
@@ -34,6 +52,7 @@ const TransactionForm = ({
                             rules={{ required: `Date ${requiredMsg}` }}
                             render={({ field }) => (
                                 <input
+                                    id="date"
                                     type="date"
                                     {...field}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -45,7 +64,7 @@ const TransactionForm = ({
                 </FormItem>
                 
                 <FormItem>
-                    <FormLabel><Translation>transactions.concept</Translation></FormLabel>
+                    <FormLabel htmlFor="concept"><Translation>transactions.concept</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="concept"
@@ -53,6 +72,7 @@ const TransactionForm = ({
                             rules={{ required: `Concept ${requiredMsg}` }}
                             render={({ field }) => (
                                 <input
+                                    id="concept"
                                     type="text"
                                     {...field}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -64,7 +84,7 @@ const TransactionForm = ({
                 </FormItem>
                 
                 <FormItem>
-                    <FormLabel><Translation>transactions.amount</Translation></FormLabel>
+                    <FormLabel htmlFor="amount"><Translation>transactions.amount</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="amount"
@@ -78,6 +98,7 @@ const TransactionForm = ({
                             }}
                             render={({ field }) => (
                                 <input
+                                    id="amount"
                                     type="number"
                                     step="0.01"
                                     {...field}
@@ -90,15 +111,21 @@ const TransactionForm = ({
                 </FormItem>
                 
                 <FormItem>
-                    <FormLabel><Translation>transactions.account</Translation></FormLabel>
+                    <FormLabel htmlFor="account_id"><Translation>transactions.account</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="account_id"
                             control={control}
                             rules={{ required: `Account ${requiredMsg}` }}
-                            render={({ field }) => (
+                            render={({ field: { onChange, value, ...field } }) => (
                                 <select
+                                    id="account_id"
                                     {...field}
+                                    value={value}
+                                    onChange={(e) => {
+                                        const val = e.target.value ? Number(e.target.value) : '';
+                                        onChange(val);
+                                    }}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 >
                                     <option value="">{translations?.transactions?.select_account || 'Select an account'}</option>
@@ -115,15 +142,21 @@ const TransactionForm = ({
                 </FormItem>
                 
                 <FormItem>
-                    <FormLabel><Translation>transactions.category</Translation></FormLabel>
+                    <FormLabel htmlFor="transaction_category_id"><Translation>transactions.category</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="transaction_category_id"
                             control={control}
                             rules={{ required: `Category ${requiredMsg}` }}
-                            render={({ field }) => (
+                            render={({ field: { onChange, value, ...field } }) => (
                                 <select
+                                    id="transaction_category_id"
                                     {...field}
+                                    value={value}
+                                    onChange={(e) => {
+                                        const val = e.target.value ? Number(e.target.value) : '';
+                                        onChange(val);
+                                    }}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 >
                                     <option value="">{translations?.transactions?.select_category || 'Select a category'}</option>
@@ -140,15 +173,21 @@ const TransactionForm = ({
                 </FormItem>
                 
                 <FormItem>
-                    <FormLabel><Translation>transactions.type</Translation></FormLabel>
+                    <FormLabel htmlFor="transaction_type_id"><Translation>transactions.type</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="transaction_type_id"
                             control={control}
                             rules={{ required: `Type ${requiredMsg}` }}
-                            render={({ field }) => (
+                            render={({ field: { onChange, value, ...field } }) => (
                                 <select
+                                    id="transaction_type_id"
                                     {...field}
+                                    value={value}
+                                    onChange={(e) => {
+                                        const val = e.target.value ? Number(e.target.value) : '';
+                                        onChange(val);
+                                    }}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 >
                                     <option value="">{translations?.transactions?.select_type || 'Select a type'}</option>
@@ -165,13 +204,14 @@ const TransactionForm = ({
                 </FormItem>
                 
                 <FormItem>
-                    <FormLabel><Translation>transactions.note</Translation></FormLabel>
+                    <FormLabel htmlFor="note"><Translation>transactions.note</Translation></FormLabel>
                     <FormControl>
                         <Controller
                             name="note"
                             control={control}
                             render={({ field }) => (
                                 <textarea
+                                    id="note"
                                     {...field}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     rows={3}
