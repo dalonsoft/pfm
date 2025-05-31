@@ -87,4 +87,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/user-preferences', [UserPreferenceController::class, 'update'])->name('user-preferences.update');
 });
 
+// Chrome DevTools route handler
+Route::get('.well-known/appspecific/{any}', function () {
+    return response()->json(['status' => 'ok']);
+})->where('any', '.*');
+
 require __DIR__.'/auth.php';
