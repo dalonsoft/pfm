@@ -27,8 +27,12 @@ class AccountCategoryController extends Controller
         return redirect()->route('account-categories.index');
     }
     
-    public function update(Request $request, AccountCategory $accountCategory)
+    public function update(Request $request, $accountCategory)
     {
+        if (!($accountCategory instanceof AccountCategory)) {
+            $accountCategory = AccountCategory::findOrFail($accountCategory);
+        }
+
         $request->validate([
             'name' => 'required',
             'description' => 'required'
@@ -38,8 +42,12 @@ class AccountCategoryController extends Controller
         return redirect()->route('account-categories.index');
     }
 
-    public function destroy(AccountCategory $accountCategory)
+    public function destroy($accountCategory)
     {
+        if (!($accountCategory instanceof AccountCategory)) {
+            $accountCategory = AccountCategory::findOrFail($accountCategory);
+        }
+
         $accountCategory->delete();
         return redirect()->route('account-categories.index');
     }

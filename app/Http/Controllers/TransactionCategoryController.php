@@ -28,8 +28,12 @@ class TransactionCategoryController extends Controller
         return redirect()->route('transaction-categories.index');
     }
     
-    public function update(Request $request, TransactionCategory $transactionCategory)
+    public function update(Request $request, $transactionCategory)
     {
+        if (!($transactionCategory instanceof TransactionCategory)) {
+            $transactionCategory = TransactionCategory::findOrFail($transactionCategory);
+        }
+
         $request->validate([
             'name' => 'required',
             'description' => 'required',
@@ -40,8 +44,12 @@ class TransactionCategoryController extends Controller
         return redirect()->route('transaction-categories.index');
     }
 
-    public function destroy(TransactionCategory $transactionCategory)
+    public function destroy($transactionCategory)
     {
+        if (!($transactionCategory instanceof TransactionCategory)) {
+            $transactionCategory = TransactionCategory::findOrFail($transactionCategory);
+        }
+
         $transactionCategory->delete();
         return redirect()->route('transaction-categories.index');
     }

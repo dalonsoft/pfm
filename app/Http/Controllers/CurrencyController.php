@@ -28,8 +28,12 @@ class CurrencyController extends Controller
         return redirect()->route('currencies.index');
     }
     
-    public function update(Request $request, Currency $currency)
+    public function update(Request $request, $currency)
     {
+        if (!($currency instanceof Currency)) {
+            $currency = Currency::findOrFail($currency);
+        }
+
         $request->validate([
             'name' => 'required',
             'code' => 'required|unique:currencies,code,' . $currency->id,
@@ -40,8 +44,12 @@ class CurrencyController extends Controller
         return redirect()->route('currencies.index');
     }
 
-    public function destroy(Currency $currency)
+    public function destroy($currency)
     {
+        if (!($currency instanceof Currency)) {
+            $currency = Currency::findOrFail($currency);
+        }
+
         $currency->delete();
         return redirect()->route('currencies.index');
     }

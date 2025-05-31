@@ -27,8 +27,12 @@ class TransactionTypeController extends Controller
         return redirect()->route('transaction-types.index');
     }
     
-    public function update(Request $request, TransactionType $transactionType)
+    public function update(Request $request, $transactionType)
     {
+        if (!($transactionType instanceof TransactionType)) {
+            $transactionType = TransactionType::findOrFail($transactionType);
+        }
+
         $request->validate([
             'name' => 'required',
             'description' => 'required'
@@ -38,8 +42,12 @@ class TransactionTypeController extends Controller
         return redirect()->route('transaction-types.index');
     }
 
-    public function destroy(TransactionType $transactionType)
+    public function destroy($transactionType)
     {
+        if (!($transactionType instanceof TransactionType)) {
+            $transactionType = TransactionType::findOrFail($transactionType);
+        }
+
         $transactionType->delete();
         return redirect()->route('transaction-types.index');
     }

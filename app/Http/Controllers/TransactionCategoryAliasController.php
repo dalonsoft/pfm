@@ -31,8 +31,12 @@ class TransactionCategoryAliasController extends Controller
         return redirect()->route('transaction-category-aliases.index');
     }
     
-    public function update(Request $request, TransactionCategoryAlias $transactionCategoryAlias)
+    public function update(Request $request, $transactionCategoryAlias)
     {
+        if (!($transactionCategoryAlias instanceof TransactionCategoryAlias)) {
+            $transactionCategoryAlias = TransactionCategoryAlias::findOrFail($transactionCategoryAlias);
+        }
+
         $request->validate([
             'alias' => 'required',
             'transaction_category_id' => 'required|exists:transaction_categories,id'
@@ -42,8 +46,12 @@ class TransactionCategoryAliasController extends Controller
         return redirect()->route('transaction-category-aliases.index');
     }
 
-    public function destroy(TransactionCategoryAlias $transactionCategoryAlias)
+    public function destroy($transactionCategoryAlias)
     {
+        if (!($transactionCategoryAlias instanceof TransactionCategoryAlias)) {
+            $transactionCategoryAlias = TransactionCategoryAlias::findOrFail($transactionCategoryAlias);
+        }
+
         $transactionCategoryAlias->delete();
         return redirect()->route('transaction-category-aliases.index');
     }

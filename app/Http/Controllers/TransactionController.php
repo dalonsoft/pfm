@@ -28,39 +28,66 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'date' => 'required|date',
-            'concept' => 'required|string',
-            'amount' => 'required|numeric',
-            'account_id' => 'required|exists:accounts,id',
-            'transaction_category_id' => 'required|exists:transaction_categories,id',
-            'transaction_type_id' => 'required|exists:transaction_types,id',
-            'note' => 'nullable|string'
-        ]);
+        try {
+            $validated = $request->validate([
+                'date' => 'required|date',
+                'concept' => 'required|string',
+                'amount' => 'required|numeric',
+                'account_id' => 'required|exists:accounts,id',
+                'transaction_category_id' => 'required|exists:transaction_categories,id',
+                'transaction_type_id' => 'required|exists:transaction_types,id',
+                'note' => 'nullable|string'
+            ]);
 
-        Transaction::create($request->all());
-        return redirect()->route('transactions.index');
+            Transaction::create($request->all());
+            return redirect()->route('transactions.index');
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'error' => 'Transaction creation failed: ' . $e->getMessage()
+            ]);
+        }
     }
     
-    public function update(Request $request, Transaction $transaction)
+    public function update(Request $request, $transaction)
     {
-        $request->validate([
-            'date' => 'required|date',
-            'concept' => 'required|string',
-            'amount' => 'required|numeric',
-            'account_id' => 'required|exists:accounts,id',
-            'transaction_category_id' => 'required|exists:transaction_categories,id',
-            'transaction_type_id' => 'required|exists:transaction_types,id',
-            'note' => 'nullable|string'
-        ]);
+        try {
+            if (!($transaction instanceof Transaction)) {
+                $transaction = Transaction::findOrFail($transaction);
+            }
 
-        $transaction->update($request->all());
-        return redirect()->route('transactions.index');
+            $validated = $request->validate([
+                'date' => 'required|date',
+                'concept' => 'required|string',
+                'amount' => 'required|numeric',
+                'account_id' => 'required|exists:accounts,id|numeric',
+                'transaction_category_id' => 'required|exists:transaction_categories,id|numeric',
+                'transaction_type_id' => 'required|exists:transaction_types,id|numeric',
+                'note' => 'nullable|string'
+            ]);
+
+            $transaction->update($validated);
+            
+            return redirect()->route('transactions.index');
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'error' => 'Transaction update failed: ' . $e->getMessage()
+            ]);
+        }
     }
 
-    public function destroy(Transaction $transaction)
+    public function destroy($transaction)
     {
-        $transaction->delete();
-        return redirect()->route('transactions.index');
+        try {
+            if (!($transaction instanceof Transaction)) {
+                $transaction = Transaction::findOrFail($transaction);
+            }
+
+            $transaction->delete();
+            return redirect()->route('transactions.index');
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'error' => 'Transaction deletion failed: ' . $e->getMessage()
+            ]);
+        }
     }
 }
