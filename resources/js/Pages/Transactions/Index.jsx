@@ -63,10 +63,21 @@ const TransactionsIndex = ({ transactions, accounts, transactionCategories, tran
     };
 
     const handleSubmit = (data) => {
+        const formData = {
+            ...data,
+            account_id: data.account_id ? Number(data.account_id) : '',
+            transaction_category_id: data.transaction_category_id ? Number(data.transaction_category_id) : '',
+            transaction_type_id: data.transaction_type_id ? Number(data.transaction_type_id) : '',
+            amount: parseFloat(data.amount)
+        };
+        
         if (editData) {
-            router.put(`/transactions/${editData.id}`, data);
+            router.put(`/transactions/${editData.id}`, {
+                ...formData,
+                id: editData.id
+            });
         } else {
-            router.post('/transactions', data);
+            router.post('/transactions', formData);
         }
         setIsOpen(false);
     };

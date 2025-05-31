@@ -35,15 +35,30 @@ const AccountsIndex = ({ accounts, categories, currencies }) => {
     };
 
     const handleEdit = (account) => {
-        setEditData({...account});
+        const accountForEdit = {
+            ...account,
+            account_category_id: account.account_category_id ? Number(account.account_category_id) : '',
+            currency_id: account.currency_id ? Number(account.currency_id) : ''
+        };
+        
+        setEditData(accountForEdit);
         setIsOpen(true);
     };
 
     const handleSubmit = (data) => {
+        const formData = {
+            ...data,
+            account_category_id: data.account_category_id ? Number(data.account_category_id) : '',
+            currency_id: data.currency_id ? Number(data.currency_id) : ''
+        };
+        
         if (editData) {
-            router.put(`/accounts/${editData.id}`, data);
+            router.put(`/accounts/${editData.id}`, {
+                ...formData,
+                id: editData.id
+            });
         } else {
-            router.post('/accounts', data);
+            router.post('/accounts', formData);
         }
         setIsOpen(false);
     };
